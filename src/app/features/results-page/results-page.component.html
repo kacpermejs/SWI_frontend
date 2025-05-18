@@ -30,56 +30,42 @@
   </div>
 
   <div
-    class="flex transition-all duration-300 ease-in-out"
-    [ngClass]="{ 'gap-4': showSidebar }"
+    class="flex"
   >
-    <!-- Sidebar wrapper with animated width -->
-    <div
-      class="transition-all duration-300 ease-in-out overflow-hidden bg-gray-100 rounded-lg shadow-sm"
-      [ngStyle]="{ width: showSidebar ? '16rem' : '0rem' }"
-    >
-      <!-- Inner content safely clipped -->
-      <div
-        *ngIf="sidebarContentVisible"
-        class="p-4 whitespace-nowrap overflow-hidden text-ellipsis"
-      >
-        <h3 class="text-lg font-medium mb-2 truncate">Filters</h3>
-        <p-divider></p-divider>
-        <p class="text-sm text-gray-600 truncate">[Filter options here]</p>
-      </div>
-    </div>
+    <!-- Sidebar wrapper -->
+    <p-card *ngIf="!isCollapsed" class="mr-4">
+      <app-filters (applyFilters)="onFiltersApplied($event)"></app-filters>
+    </p-card>
 
     <!-- Main Content -->
-    <div class="flex-1">
-      <div class="space-y-4">
-        <div class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-200">
-          <a
-            href="https://en.wikipedia.org/wiki/Angular_(web_framework)"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-blue-600 text-xl font-semibold hover:underline"
-            >Angular (web framework)</a
-          >
-          <p class="text-gray-700 mt-2">
-            Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations.
-          </p>
-          <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
-        </div>
+    <div class="flex flex-col gap-4">
+      <p-card>
+        <a
+          href="https://en.wikipedia.org/wiki/Angular_(web_framework)"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-600 text-xl font-semibold hover:underline"
+          >Angular (web framework)</a
+        >
+        <p class="text-gray-700 mt-2">
+          Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations.
+        </p>
+        <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
+      </p-card>
 
-        <div class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-200">
-          <a
-            href="https://en.wikipedia.org/wiki/PrimeNG"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-blue-600 text-xl font-semibold hover:underline"
-            >PrimeNG</a
-          >
-          <p class="text-gray-700 mt-2">
-            PrimeNG is a collection of rich UI components for Angular, featuring theming, accessibility, and various widgets.
-          </p>
-          <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
-        </div>
-      </div>
+      <p-card>
+        <a
+          href="https://en.wikipedia.org/wiki/PrimeNG"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-600 text-xl font-semibold hover:underline"
+          >PrimeNG</a
+        >
+        <p class="text-gray-700 mt-2">
+          PrimeNG is a collection of rich UI components for Angular, featuring theming, accessibility, and various widgets.
+        </p>
+        <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
+      </p-card>
     </div>
   </div>
 </div>

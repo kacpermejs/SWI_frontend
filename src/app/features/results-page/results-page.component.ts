@@ -1,11 +1,15 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
+import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { FiltersComponent } from './components/filters/filters.component';
+import { Filters } from './models/Filters';
+import { ArticleType } from './models/ArticleType';
 
 @Component({
   selector: 'app-results-page',
@@ -16,43 +20,78 @@ import { InputTextModule } from 'primeng/inputtext';
     PanelModule,
     DividerModule,
     InputTextModule,
+    FiltersComponent,
+    CardModule,
   ],
   templateUrl: './results-page.component.html',
   styleUrl: './results-page.component.css',
 })
 export class ResultsPageComponent {
   query: string = '';
-  showSidebar: boolean = false;
-  sidebarContentVisible: boolean = false;
+  isCollapsed = true;
+  filters?: Filters;
 
-  isSearching: boolean = false;
+  isSearching = false;
   router = inject(Router);
 
   constructor(private route: ActivatedRoute) {
     this.route.queryParams.subscribe((params) => {
-      this.query = params['query'] || '';
+      this.query = this.extractQuery(params);
+
+      this.filters = this.extractFilters(params);
     });
   }
 
   toggleSidebar() {
-    if (this.showSidebar) {
-      // start closing animation
-      this.showSidebar = false;
-      // hide content after animation duration (e.g., 300ms)
-      setTimeout(() => {
-        this.sidebarContentVisible = false;
-      }, 300);
-    } else {
-      // prepare content first
-      this.sidebarContentVisible = true;
-      this.showSidebar = true;
-    }
+    this.isCollapsed = !this.isCollapsed;
   }
 
   onSearch() {
-    const trimmed = this.query.trim();
-    if (!trimmed) return;
+    const trimmedQuery = this.query?.trim();
 
-    this.router.navigate(['/results'], { queryParams: { query: trimmed } });
+    const categoryNamesJoined = this.filters?.categories?.length
+      ? this.filters.categories.map((c) => c.name).join(',')
+      : undefined;
+
+    const articleType: ArticleType | undefined = this.filters?.articleType;
+    console.log(articleType);
+    this.router.navigate(['/results'], {
+      queryParams: {
+        query: trimmedQuery,
+        categories: categoryNamesJoined,
+        articleType: articleType,
+      },
+    });
+  }
+
+  onFiltersApplied(filters: Filters) {
+    this.filters = filters;
+    this.onSearch();
+  }
+
+  private extractQuery(params: Params): string {
+    return params['query'] || '';
+  }
+
+  extractFilters(params: Params): Filters {
+    return {
+      categories: this.extractCategories(params),
+      articleType: this.extractArticleType(params),
+    };
+  }
+
+  extractArticleType(params: Params): ArticleType | undefined {
+    const type = params['articleType'];
+
+    const isValid = Object.values(ArticleType).includes(type as ArticleType);
+    return isValid ? (type as ArticleType) : undefined;
+  }
+
+  private extractCategories(params: Params) {
+    const categoryParam = params['categories'];
+    const categoryNames: string[] = categoryParam
+      ? categoryParam.split(',')
+      : [];
+    return categoryNames.map((n) => ({ name: n }));
   }
 }
