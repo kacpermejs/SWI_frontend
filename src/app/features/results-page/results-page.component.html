@@ -1,1 +1,85 @@
-<p>results-page works!</p>
+<div class="min-h-screen p-4 bg-white">
+  <!-- Top Bar -->
+  <div class="flex justify-between items-center mb-4 gap-4 flex-wrap">
+    <!-- Filters Button -->
+    <button
+      pButton
+      icon="pi pi-filter"
+      label="Filters"
+      (click)="toggleSidebar()"
+      class="p-button-sm"
+    ></button>
+    <!-- Search Input -->
+    <div class="w-full max-w-md flex gap-2">
+      <input
+        type="text"
+        pInputText
+        placeholder="Enter search term..."
+        [(ngModel)]="query"
+        class="flex-1"
+      />
+
+      <p-button
+        type="button"
+        label="Search"
+        icon="pi pi-search"
+        [disabled]="isSearching"
+        (click)="onSearch()"
+      />
+    </div>
+  </div>
+
+  <div
+    class="flex transition-all duration-300 ease-in-out"
+    [ngClass]="{ 'gap-4': showSidebar }"
+  >
+    <!-- Sidebar wrapper with animated width -->
+    <div
+      class="transition-all duration-300 ease-in-out overflow-hidden bg-gray-100 rounded-lg shadow-sm"
+      [ngStyle]="{ width: showSidebar ? '16rem' : '0rem' }"
+    >
+      <!-- Inner content safely clipped -->
+      <div
+        *ngIf="sidebarContentVisible"
+        class="p-4 whitespace-nowrap overflow-hidden text-ellipsis"
+      >
+        <h3 class="text-lg font-medium mb-2 truncate">Filters</h3>
+        <p-divider></p-divider>
+        <p class="text-sm text-gray-600 truncate">[Filter options here]</p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+      <div class="space-y-4">
+        <div class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-200">
+          <a
+            href="https://en.wikipedia.org/wiki/Angular_(web_framework)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-600 text-xl font-semibold hover:underline"
+            >Angular (web framework)</a
+          >
+          <p class="text-gray-700 mt-2">
+            Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations.
+          </p>
+          <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-200">
+          <a
+            href="https://en.wikipedia.org/wiki/PrimeNG"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-600 text-xl font-semibold hover:underline"
+            >PrimeNG</a
+          >
+          <p class="text-gray-700 mt-2">
+            PrimeNG is a collection of rich UI components for Angular, featuring theming, accessibility, and various widgets.
+          </p>
+          <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
