@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +27,10 @@ import { DropdownModule } from 'primeng/dropdown';
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.css',
 })
-export class FiltersComponent {
+export class FiltersComponent implements OnChanges {
+  @Input() initialCategories: Category[] = [];
+  @Input() initialArticleType?: ArticleType;
+
   @Output() applyFilters = new EventEmitter<Filters>();
 
   categories: Category[] = [
@@ -35,8 +45,18 @@ export class FiltersComponent {
     label: value.toString(),
     value: value,
   }));
+
   selectedCategories: Category[] = [];
   articleType?: ArticleType;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialCategories']) {
+      this.selectedCategories = this.initialCategories || [];
+    }
+    if (changes['initialArticleType']) {
+      this.articleType = this.initialArticleType;
+    }
+  }
 
   onApplyFilters() {
     this.applyFilters.emit({

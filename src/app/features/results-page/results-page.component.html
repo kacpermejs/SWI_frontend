@@ -34,7 +34,9 @@
   >
     <!-- Sidebar wrapper -->
     <p-card *ngIf="!isCollapsed" class="mr-4">
-      <app-filters (applyFilters)="onFiltersApplied($event)"></app-filters>
+      <app-filters (applyFilters)="onFiltersApplied($event)"
+        [initialCategories]="filters?.categories ?? []"
+        [initialArticleType]="filters?.articleType"></app-filters>
     </p-card>
 
     <!-- Main Content -->

@@ -54,7 +54,6 @@ export class ResultsPageComponent {
       : undefined;
 
     const articleType: ArticleType | undefined = this.filters?.articleType;
-    console.log(articleType);
     this.router.navigate(['/results'], {
       queryParams: {
         query: trimmedQuery,
