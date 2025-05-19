@@ -26,6 +26,7 @@ export class SearchService {
 
     //return this.http.get<ArticlePage>(this.apiUrl, { params });
 
+    //TODO
     return of(this.mockSearchRequest(page, size, query, filters)).pipe(
       delay(1000) // 1 second delay
     );

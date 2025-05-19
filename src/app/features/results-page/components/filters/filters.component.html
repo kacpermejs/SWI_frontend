@@ -1,15 +1,16 @@
 <div class="flex flex-col gap-4 w-[16rem]">
   <label class="font-semibold text-gray-700">Categories</label>
   <p-multiSelect
-    [options]="categories"
+    [options]="availableCategories"
     [(ngModel)]="selectedCategories"
     [maxSelectedLabels]="2"
     optionLabel="name"
-    display="chip" 
+    display="chip"
     placeholder="Select categories"
-    filter="true"
+    [filter]="true"
     filterPlaceholder="Search categories"
-    ></p-multiSelect>
+    (onFilter)="onCategoryFilter($event)"
+  ></p-multiSelect>
     
   <label class="font-semibold text-gray-700">Article type</label>
   <p-dropdown

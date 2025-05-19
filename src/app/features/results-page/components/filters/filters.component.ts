@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   Output,
@@ -14,6 +15,8 @@ import { Filters } from '../../models/Filters';
 import { ArticleType } from '../../models/ArticleType';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { CategoriesService } from '../../services/categories.service';
 
 @Component({
   selector: 'app-filters',
@@ -33,14 +36,9 @@ export class FiltersComponent implements OnChanges {
 
   @Output() applyFilters = new EventEmitter<Filters>();
 
-  categories: Category[] = [
-    { name: 'Science' },
-    { name: 'Technology' },
-    { name: 'History' },
-    { name: 'Art' },
-    { name: 'Sports' },
-  ];
+  private categoriesService = inject(CategoriesService);
 
+  availableCategories: Category[] = [];
   articleTypeOptions = Object.values(ArticleType).map((value) => ({
     label: value.toString(),
     value: value,
@@ -49,12 +47,33 @@ export class FiltersComponent implements OnChanges {
   selectedCategories: Category[] = [];
   articleType?: ArticleType;
 
+  private searchTerms = new Subject<string>();
+
+  constructor() {
+    this.searchTerms
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => this.categoriesService.searchCategories(term))
+      )
+      .subscribe((results) => (this.availableCategories = results));
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['initialCategories']) {
       this.selectedCategories = this.initialCategories || [];
     }
     if (changes['initialArticleType']) {
       this.articleType = this.initialArticleType;
+    }
+  }
+
+  onCategoryFilter(event: any) {
+    const query = event.filter;
+    if (query && query.trim().length > 0) {
+      this.searchTerms.next(query);
+    } else {
+      this.availableCategories = [];
     }
   }
 
