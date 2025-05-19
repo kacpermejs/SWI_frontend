@@ -11,6 +11,7 @@ import { FiltersComponent } from './components/filters/filters.component';
 import { Filters } from './models/Filters';
 import { Article, ArticleType } from './models/ArticleType';
 import { SearchService } from './services/search.service';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 @Component({
   selector: 'app-results-page',
@@ -23,11 +24,12 @@ import { SearchService } from './services/search.service';
     InputTextModule,
     FiltersComponent,
     CardModule,
+    PaginatorModule,
   ],
   templateUrl: './results-page.component.html',
   styleUrl: './results-page.component.css',
 })
-export class ResultsPageComponent implements OnInit {
+export class ResultsPageComponent {
   query: string = '';
   isCollapsed = true;
   filters?: Filters;
@@ -44,13 +46,12 @@ export class ResultsPageComponent implements OnInit {
   constructor(private route: ActivatedRoute) {
     this.route.queryParams.subscribe((params) => {
       this.query = this.extractQuery(params);
-
+      this.query = this.extractQuery(params);
       this.filters = this.extractFilters(params);
+      this.currentPage = parseInt(params['currentPage'], 10) || 0;
+      this.pageSize = parseInt(params['pageSize'], 10) || 20;
+      this.search();
     });
-  }
-
-  ngOnInit(): void {
-    this.search();
   }
 
   search() {
@@ -69,6 +70,19 @@ export class ResultsPageComponent implements OnInit {
     this.isCollapsed = !this.isCollapsed;
   }
 
+  onPageChange(event: any) {
+    const newPage = event.page;
+    const newSize = event.rows;
+
+    this.router.navigate([], {
+      queryParams: {
+        currentPage: newPage,
+        pageSize: newSize,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
   onSearch() {
     const trimmedQuery = this.query?.trim();
 
@@ -82,6 +96,9 @@ export class ResultsPageComponent implements OnInit {
         query: trimmedQuery,
         categories: categoryNamesJoined,
         articleType: articleType,
+        currentPage: 0,
+        pageSize: this.pageSize,
+        //no merge
       },
     });
   }

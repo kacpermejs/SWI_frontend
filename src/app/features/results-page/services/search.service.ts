@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { delay, Observable, of } from 'rxjs';
 import { Filters } from '../models/Filters';
 import { ArticlePage } from '../models/ArticlePage';
 import { Article, ArticleType } from '../models/ArticleType';
@@ -26,7 +26,9 @@ export class SearchService {
 
     //return this.http.get<ArticlePage>(this.apiUrl, { params });
 
-    return of(this.mockSearchRequest(page, size, query, filters));
+    return of(this.mockSearchRequest(page, size, query, filters)).pipe(
+      delay(1000) // 1 second delay
+    );
   }
 
   private mockSearchRequest(
@@ -49,7 +51,10 @@ export class SearchService {
       url: 'https://en.wikipedia.org/wiki/Angular_(web_framework)',
     };
 
-    const content = Array(numberOfElements).fill(mockArticle);
+    const content = Array.from({ length: numberOfElements }, (_, index) => ({
+      ...mockArticle,
+      title: `${index + 1 + page * size}. ${mockArticle.title}`,
+    }));
 
     return {
       content,

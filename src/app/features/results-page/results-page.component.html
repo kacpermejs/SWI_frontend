@@ -61,6 +61,16 @@
             <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
           </p-card>
         </ng-container>
+
+        <!-- ✅ PrimeNG Paginator -->
+        <p-paginator
+          [rows]="pageSize"
+          [first]="currentPage * pageSize"
+          [totalRecords]="totalPages * pageSize"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          (onPageChange)="onPageChange($event)"
+          styleClass="mt-4"
+        ></p-paginator>
         @if(articles.length <= 0) {
           <p >No articles found</p>
         }
