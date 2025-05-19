@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { FiltersComponent } from './components/filters/filters.component';
 import { Filters } from './models/Filters';
-import { ArticleType } from './models/ArticleType';
+import { Article, ArticleType } from './models/ArticleType';
+import { SearchService } from './services/search.service';
 
 @Component({
   selector: 'app-results-page',
@@ -26,13 +27,19 @@ import { ArticleType } from './models/ArticleType';
   templateUrl: './results-page.component.html',
   styleUrl: './results-page.component.css',
 })
-export class ResultsPageComponent {
+export class ResultsPageComponent implements OnInit {
   query: string = '';
   isCollapsed = true;
   filters?: Filters;
 
   isSearching = false;
+  articleService = inject(SearchService);
   router = inject(Router);
+
+  articles: Article[] = [];
+  currentPage = 0;
+  pageSize = 20;
+  totalPages = 0;
 
   constructor(private route: ActivatedRoute) {
     this.route.queryParams.subscribe((params) => {
@@ -40,6 +47,22 @@ export class ResultsPageComponent {
 
       this.filters = this.extractFilters(params);
     });
+  }
+
+  ngOnInit(): void {
+    this.search();
+  }
+
+  search() {
+    this.isSearching = true;
+
+    this.articleService
+      .getItems(this.currentPage, this.pageSize, this.query, this.filters!)
+      .subscribe((page) => {
+        this.articles = page.content;
+        this.totalPages = page.totalPages;
+        this.isSearching = false;
+      });
   }
 
   toggleSidebar() {

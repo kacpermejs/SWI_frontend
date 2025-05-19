@@ -41,33 +41,30 @@
 
     <!-- Main Content -->
     <div class="flex flex-col gap-4">
-      <p-card>
-        <a
-          href="https://en.wikipedia.org/wiki/Angular_(web_framework)"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-blue-600 text-xl font-semibold hover:underline"
-          >Angular (web framework)</a
-        >
-        <p class="text-gray-700 mt-2">
-          Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations.
-        </p>
-        <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
-      </p-card>
-
-      <p-card>
-        <a
-          href="https://en.wikipedia.org/wiki/PrimeNG"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-blue-600 text-xl font-semibold hover:underline"
-          >PrimeNG</a
-        >
-        <p class="text-gray-700 mt-2">
-          PrimeNG is a collection of rich UI components for Angular, featuring theming, accessibility, and various widgets.
-        </p>
-        <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
-      </p-card>
+      @if (isSearching) {
+        <p >Loading...</p>
+      }
+      @else {
+        <ng-container *ngFor="let article of articles">
+          <p-card class="mb-4">
+            <a
+              [href]="article.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-600 text-xl font-semibold hover:underline"
+            >
+              {{ article.title }}
+            </a>
+            <p class="text-gray-700 mt-2">
+              {{ article.text }}
+            </p>
+            <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
+          </p-card>
+        </ng-container>
+        @if(articles.length <= 0) {
+          <p >No articles found</p>
+        }
+      }
     </div>
   </div>
 </div>
