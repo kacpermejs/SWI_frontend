@@ -1,6 +1,7 @@
-<div class="flex flex-col gap-4 w-[16rem]">
+<div class="flex flex-col gap-4 w-full md:w-[15rem]">
   <label class="font-semibold text-gray-700">Categories</label>
   <p-multiSelect
+    class="w-full"
     [options]="availableCategories"
     [(ngModel)]="selectedCategories"
     [maxSelectedLabels]="2"
@@ -14,16 +15,16 @@
     
   <label class="font-semibold text-gray-700">Article type</label>
   <p-dropdown
+    class="w-full"
     [options]="articleTypeOptions"
     [(ngModel)]="articleType"
     placeholder="Select a status"
     [optionLabel]="'label'"
     [optionValue]="'value'"
     [showClear]="true"
-    class="w-full"
   />
 
-  <p-button (onClick)="onApplyFilters()" class="self-end">
+  <p-button class="self-end" (onClick)="onApplyFilters()">
     Apply filters
   </p-button>
 </div>
