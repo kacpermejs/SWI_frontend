@@ -62,10 +62,17 @@ export class FiltersComponent implements OnChanges {
     this.searchTerms
       .pipe(
         debounceTime(300),
-        distinctUntilChanged(),
         switchMap((term) => this.categoriesService.searchCategories(term))
       )
-      .subscribe((results) => (this.availableCategories = results));
+      .subscribe((results) => {
+        const selected = this.selectedCategories ?? [];
+
+        const filteredResults = results.filter(
+          (r) => !selected.some((sel) => sel.name === r.name)
+        );
+
+        this.availableCategories = [...selected, ...filteredResults];
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -87,6 +94,12 @@ export class FiltersComponent implements OnChanges {
     } else {
       this.availableCategories = [];
     }
+  }
+
+  removeCategory(categoryToRemove: Category) {
+    this.selectedCategories = this.selectedCategories.filter(
+      (cat) => cat.name !== categoryToRemove.name
+    );
   }
 
   onApplyFilters() {

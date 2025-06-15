@@ -12,13 +12,31 @@
   ></p-dropdown>
 
   <label class="font-semibold text-gray-700">Categories</label>
+
+  <!-- Custom Chips Displayed Always -->
+  <div class="flex flex-wrap gap-2 mb-2">
+    <span
+      *ngFor="let category of selectedCategories"
+      class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm flex items-center gap-1"
+    >
+      {{ category.name }}
+      <button
+        class="text-blue-500 hover:text-blue-700"
+        (click)="removeCategory(category)"
+      >
+        ✕
+      </button>
+    </span>
+  </div>
+
+  <!-- MultiSelect With Search -->
   <p-multiSelect
     class="w-full"
     [options]="availableCategories"
     [(ngModel)]="selectedCategories"
-    [maxSelectedLabels]="2"
+    [maxSelectedLabels]="0"
     optionLabel="name"
-    display="chip"
+    display="comma"
     placeholder="Select categories"
     [filter]="true"
     filterPlaceholder="Search categories"
