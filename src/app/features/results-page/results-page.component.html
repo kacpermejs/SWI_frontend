@@ -40,7 +40,8 @@
       <p-card *ngIf="!isCollapsed" class="md:mr-4 md:w-72 w-full">
         <app-filters (applyFilters)="onFiltersApplied($event)"
           [initialCategories]="filters?.categories ?? []"
-          [initialArticleType]="filters?.articleType"></app-filters>
+          [initialArticleType]="filters?.articleType"
+          [initialSort]="filters?.sort"></app-filters>
       </p-card>
 
       <!-- Main Content -->

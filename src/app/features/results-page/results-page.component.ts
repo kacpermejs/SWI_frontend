@@ -12,6 +12,7 @@ import { Filters } from './models/Filters';
 import { Article, ArticleType } from './models/ArticleType';
 import { SearchService } from './services/search.service';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { SortOption } from './models/SortOption';
 
 @Component({
   selector: 'app-results-page',
@@ -91,9 +92,11 @@ export class ResultsPageComponent {
       : undefined;
 
     const articleType: ArticleType | undefined = this.filters?.articleType;
+    const sort: SortOption | undefined = this.filters?.sort;
     this.router.navigate(['/results'], {
       queryParams: {
         query: trimmedQuery,
+        sort: sort,
         categories: categoryNamesJoined,
         articleType: articleType,
         currentPage: 0,
@@ -114,6 +117,7 @@ export class ResultsPageComponent {
 
   extractFilters(params: Params): Filters {
     return {
+      sort: this.extractSort(params),
       categories: this.extractCategories(params),
       articleType: this.extractArticleType(params),
     };
@@ -132,5 +136,11 @@ export class ResultsPageComponent {
       ? categoryParam.split(',')
       : [];
     return categoryNames.map((n) => ({ name: n }));
+  }
+  private extractSort(params: Params) {
+    const sort = params['articleType'];
+
+    const isValid = Object.values(SortOption).includes(sort as SortOption);
+    return isValid ? (sort as SortOption) : SortOption.Relevance;
   }
 }

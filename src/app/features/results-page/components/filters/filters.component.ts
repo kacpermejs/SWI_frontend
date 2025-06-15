@@ -17,6 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { CategoriesService } from '../../services/categories.service';
+import { SortOption } from '../../models/SortOption';
 
 @Component({
   selector: 'app-filters',
@@ -33,6 +34,7 @@ import { CategoriesService } from '../../services/categories.service';
 export class FiltersComponent implements OnChanges {
   @Input() initialCategories: Category[] = [];
   @Input() initialArticleType?: ArticleType;
+  @Input() initialSort?: SortOption;
 
   @Output() applyFilters = new EventEmitter<Filters>();
 
@@ -44,6 +46,13 @@ export class FiltersComponent implements OnChanges {
     value: value,
   }));
 
+  sortOptions = [
+    { label: 'Relevance', value: SortOption.Relevance },
+    { label: 'Name A-Z', value: SortOption.NameAsc },
+    { label: 'Name Z-A', value: SortOption.NameDesc },
+  ];
+
+  selectedSort: string = SortOption.Relevance;
   selectedCategories: Category[] = [];
   articleType?: ArticleType;
 
@@ -66,6 +75,9 @@ export class FiltersComponent implements OnChanges {
     if (changes['initialArticleType']) {
       this.articleType = this.initialArticleType;
     }
+    if (changes['initialSort']) {
+      this.selectedSort = this.initialSort || SortOption.Relevance;
+    }
   }
 
   onCategoryFilter(event: any) {
@@ -79,6 +91,7 @@ export class FiltersComponent implements OnChanges {
 
   onApplyFilters() {
     this.applyFilters.emit({
+      sort: this.selectedSort as SortOption,
       categories: this.selectedCategories,
       articleType: this.articleType,
     });
