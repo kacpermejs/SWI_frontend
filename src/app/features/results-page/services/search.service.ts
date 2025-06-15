@@ -4,13 +4,15 @@ import { delay, Observable, of } from 'rxjs';
 import { Filters } from '../models/Filters';
 import { ArticlePage } from '../models/ArticlePage';
 import { Article, ArticleType } from '../models/ArticleType';
+import { SortOption } from '../models/SortOption';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SearchService {
-  private apiUrl = 'http://localhost:8080/api/search';
   http = inject(HttpClient);
+
+  private apiUrl = 'http://localhost:8080/api/search';
 
   constructor() {}
 
@@ -21,15 +23,41 @@ export class SearchService {
     filters: Filters
   ): Observable<ArticlePage> {
     let params = new HttpParams()
-      .set('page', page.toString())
+      .set('page', page.toString()) // page is 0-based
       .set('size', size.toString());
 
-    //return this.http.get<ArticlePage>(this.apiUrl, { params });
+    if (filters.sort) {
+      params = params.set('sort', this.getSortParam(filters.sort));
+    }
 
-    //TODO
-    return of(this.mockSearchRequest(page, size, query, filters)).pipe(
-      delay(1000) // 1 second delay
-    );
+    const body = {
+      title: query || null,
+      text: query || null, //TODO now Title Or Text
+      categories: filters.categories?.map((cat) => cat.name) ?? [],
+    };
+
+    if (!query) {
+      return of();
+    }
+
+    if (true) {
+      return of(this.mockSearchRequest(page, size, query, filters)).pipe(
+        delay(1000)
+      );
+    }
+
+    return this.http.post<ArticlePage>(this.apiUrl, body, { params });
+  }
+
+  private getSortParam(sort: SortOption): string {
+    switch (sort) {
+      case SortOption.TitleAsc:
+        return 'title,asc';
+      case SortOption.TitleDesc:
+        return 'title,desc';
+      default:
+        return 'relevance,desc';
+    }
   }
 
   private mockSearchRequest(

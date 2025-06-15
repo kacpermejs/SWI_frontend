@@ -48,8 +48,8 @@ export class FiltersComponent implements OnChanges {
 
   sortOptions = [
     { label: 'Relevance', value: SortOption.Relevance },
-    { label: 'Name A-Z', value: SortOption.NameAsc },
-    { label: 'Name Z-A', value: SortOption.NameDesc },
+    { label: 'Name A-Z', value: SortOption.TitleAsc },
+    { label: 'Name Z-A', value: SortOption.TitleDesc },
   ];
 
   selectedSort: string = SortOption.Relevance;
