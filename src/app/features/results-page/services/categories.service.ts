@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, map } from 'rxjs';
 import { Category } from '../models/Category';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
@@ -11,20 +11,24 @@ export class CategoriesService {
 
   http = inject(HttpClient);
 
-  apiUrl = 'http://localhost:8080/api/categories';
+  apiUrl = '/api/categories';
 
   searchCategories(query: string): Observable<Category[]> {
     if (!query || query.trim() === '') {
       return of([]);
     }
 
-    const params = new HttpParams().set('q', query.trim()); //TODO set proper parameter
-
-    if (true) {
+    const params = new HttpParams()
+      .set('names', query.trim())
+      .set('page', 0)
+      .set('size', 20);
+    if (false) {
       return this.mockCategories(query);
     }
 
-    return this.http.get<Category[]>(this.apiUrl, { params });
+    return this.http
+      .get<CategoriesPage>(this.apiUrl, { params })
+      .pipe(map((page) => page.content));
   }
 
   mockCategories(query: string): Observable<Category[]> {
@@ -51,4 +55,8 @@ export class CategoriesService {
     // Simulate latency
     return of(filtered).pipe(delay(500)); //TODO
   }
+}
+
+export interface CategoriesPage {
+  content: Category[];
 }

@@ -13,6 +13,7 @@ import { Article, ArticleType } from './models/ArticleType';
 import { SearchService } from './services/search.service';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { SortOption } from './models/SortOption';
+import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-results-page',
@@ -60,6 +61,15 @@ export class ResultsPageComponent {
 
     this.articleService
       .getItems(this.currentPage, this.pageSize, this.query, this.filters!)
+      .pipe(
+        catchError((e) => {
+          console.log('Error while searching');
+          this.articles = [];
+          this.totalPages = 0;
+          this.isSearching = false;
+          throw e;
+        })
+      )
       .subscribe((page) => {
         this.articles = page.content;
         this.totalPages = page.totalPages;

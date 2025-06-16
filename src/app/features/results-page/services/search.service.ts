@@ -12,7 +12,7 @@ import { SortOption } from '../models/SortOption';
 export class SearchService {
   http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:8080/api/search';
+  private apiUrl = '/api/articles';
 
   constructor() {}
 
@@ -26,27 +26,29 @@ export class SearchService {
       .set('page', page.toString()) // page is 0-based
       .set('size', size.toString());
 
-    if (filters.sort) {
-      params = params.set('sort', this.getSortParam(filters.sort));
+    //TODO fix sorting
+    // if (filters.sort && filters.sort !== SortOption.Relevance) {
+    //   params = params.set('sort', this.getSortParam(filters.sort));
+    // }
+
+    if (query) {
+      params = params.set('title', query).set('text', query);
     }
 
-    const body = {
-      title: query || null,
-      text: query || null, //TODO now Title Or Text
-      categories: filters.categories?.map((cat) => cat.name) ?? [],
-    };
-
-    if (!query) {
-      return of();
+    if (filters.categories && filters.categories.length > 0) {
+      params = params.set(
+        'categories',
+        (filters.categories?.map((cat) => cat.name) ?? []).join(',')
+      );
     }
 
-    if (true) {
+    if (false) {
       return of(this.mockSearchRequest(page, size, query, filters)).pipe(
         delay(1000)
       );
     }
 
-    return this.http.post<ArticlePage>(this.apiUrl, body, { params });
+    return this.http.get<ArticlePage>(this.apiUrl, { params });
   }
 
   private getSortParam(sort: SortOption): string {

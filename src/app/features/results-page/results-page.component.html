@@ -61,12 +61,14 @@
                 {{ article.title }}
               </a>
               <p class="text-gray-700 mt-2">
-                {{ article.text }}
+                {{ article.text.length > 200 ? (article.text | slice:0:200) + ' …' : article.text }}
               </p>
               <div class="text-sm text-gray-500 mt-3">Source: Wikipedia</div>
             </p-card>
           </ng-container>
-
+          @if(articles.length <= 0) {
+            <p >No articles found</p>
+          }
           <!-- ✅ PrimeNG Paginator -->
           <p-paginator
             [rows]="pageSize"
@@ -76,9 +78,6 @@
             (onPageChange)="onPageChange($event)"
             styleClass="mt-4"
           ></p-paginator>
-          @if(articles.length <= 0) {
-            <p >No articles found</p>
-          }
         }
       </div>
     </div>
