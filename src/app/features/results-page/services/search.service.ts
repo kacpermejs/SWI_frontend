@@ -27,9 +27,11 @@ export class SearchService {
       .set('size', size.toString());
 
     //TODO fix sorting
-    // if (filters.sort && filters.sort !== SortOption.Relevance) {
-    //   params = params.set('sort', this.getSortParam(filters.sort));
-    // }
+    console.log(filters);
+    if (filters.sort && filters.sort != SortOption.Relevance) {
+      console.log('add param');
+      params = params.set('sort', this.getSortParam(filters.sort));
+    }
 
     if (query) {
       params = params.set('title', query).set('text', query);

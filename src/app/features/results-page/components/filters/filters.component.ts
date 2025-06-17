@@ -52,7 +52,7 @@ export class FiltersComponent implements OnChanges {
     { label: 'Name Z-A', value: SortOption.TitleDesc },
   ];
 
-  selectedSort: string = SortOption.Relevance;
+  selectedSort: SortOption = SortOption.Relevance;
   selectedCategories: Category[] = [];
   articleType?: ArticleType;
 

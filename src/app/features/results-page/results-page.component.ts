@@ -148,7 +148,7 @@ export class ResultsPageComponent {
     return categoryNames.map((n) => ({ name: n }));
   }
   private extractSort(params: Params) {
-    const sort = params['articleType'];
+    const sort = params['sort'];
 
     const isValid = Object.values(SortOption).includes(sort as SortOption);
     return isValid ? (sort as SortOption) : SortOption.Relevance;
