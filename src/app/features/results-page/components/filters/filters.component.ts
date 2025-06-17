@@ -18,6 +18,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { CategoriesService } from '../../services/categories.service';
 import { SortOption } from '../../models/SortOption';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-filters',
@@ -27,6 +28,7 @@ import { SortOption } from '../../models/SortOption';
     MultiSelectModule,
     ButtonModule,
     DropdownModule,
+    InputTextModule,
   ],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.css',
@@ -35,10 +37,14 @@ export class FiltersComponent implements OnChanges {
   @Input() initialCategories: Category[] = [];
   @Input() initialArticleType?: ArticleType;
   @Input() initialSort?: SortOption;
+  @Input() initialWordInText?: string;
 
   @Output() applyFilters = new EventEmitter<Filters>();
 
   private categoriesService = inject(CategoriesService);
+
+  //filters
+  wordInText?: string;
 
   availableCategories: Category[] = [];
   articleTypeOptions = Object.values(ArticleType).map((value) => ({
@@ -85,6 +91,9 @@ export class FiltersComponent implements OnChanges {
     if (changes['initialSort']) {
       this.selectedSort = this.initialSort || SortOption.Relevance;
     }
+    if (changes['initialWordInText']) {
+      this.wordInText = this.initialWordInText || undefined;
+    }
   }
 
   onCategoryFilter(event: any) {
@@ -107,6 +116,7 @@ export class FiltersComponent implements OnChanges {
       sort: this.selectedSort as SortOption,
       categories: this.selectedCategories,
       articleType: this.articleType,
+      wordInText: this.wordInText,
     });
   }
 }

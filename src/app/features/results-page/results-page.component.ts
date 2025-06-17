@@ -48,7 +48,6 @@ export class ResultsPageComponent {
   constructor(private route: ActivatedRoute) {
     this.route.queryParams.subscribe((params) => {
       this.query = this.extractQuery(params);
-      this.query = this.extractQuery(params);
       this.filters = this.extractFilters(params);
       this.currentPage = parseInt(params['currentPage'], 10) || 0;
       this.pageSize = parseInt(params['pageSize'], 10) || 20;
@@ -103,9 +102,11 @@ export class ResultsPageComponent {
 
     const articleType: ArticleType | undefined = this.filters?.articleType;
     const sort: SortOption | undefined = this.filters?.sort;
+    const wordInText: string | undefined = this.filters?.wordInText;
     this.router.navigate(['/results'], {
       queryParams: {
         query: trimmedQuery,
+        wordInText: wordInText,
         sort: sort,
         categories: categoryNamesJoined,
         articleType: articleType,
@@ -130,7 +131,13 @@ export class ResultsPageComponent {
       sort: this.extractSort(params),
       categories: this.extractCategories(params),
       articleType: this.extractArticleType(params),
+      wordInText: this.extractWordInText(params),
     };
+  }
+  extractWordInText(params: Params): string | undefined {
+    const word = params['wordInText'];
+
+    return word;
   }
 
   extractArticleType(params: Params): ArticleType | undefined {

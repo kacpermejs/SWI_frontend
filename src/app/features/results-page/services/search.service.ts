@@ -34,7 +34,11 @@ export class SearchService {
     }
 
     if (query) {
-      params = params.set('title', query).set('text', query);
+      params = params.set('title', query);
+    }
+
+    if (filters.wordInText) {
+      params = params.set('text', filters.wordInText);
     }
 
     if (filters.categories && filters.categories.length > 0) {

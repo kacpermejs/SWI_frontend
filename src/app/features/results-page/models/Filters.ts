@@ -6,4 +6,5 @@ export interface Filters {
   sort?: SortOption;
   categories: Category[];
   articleType?: ArticleType;
+  wordInText?: string;
 }

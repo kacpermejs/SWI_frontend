@@ -41,7 +41,8 @@
         <app-filters (applyFilters)="onFiltersApplied($event)"
           [initialCategories]="filters?.categories ?? []"
           [initialArticleType]="filters?.articleType"
-          [initialSort]="filters?.sort"></app-filters>
+          [initialSort]="filters?.sort"
+          [initialWordInText]="filters?.wordInText"></app-filters>
       </p-card>
 
       <!-- Main Content -->
